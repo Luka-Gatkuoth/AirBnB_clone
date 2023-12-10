@@ -13,6 +13,7 @@ from models.base_model import BaseModel
 # from models.place import Place
 # from models.review import Review
 
+
 class FileStorage():
     """Serialize/Deserialize python data"""
     __file_path = "file.json"
@@ -44,18 +45,18 @@ class FileStorage():
 
     def reload(self):
         """Deserializes the JSON file to __objects only if the JSON
-        file (__file_path) exists ; otherwise, do nothing. If the 
+        file (__file_path) exists ; otherwise, do nothing. If the
         file doesn’t exist, no exception should be raised)
         """
 
         my_dict = {
                 "BaseModel": BaseModel,
-        #        "User": User,
-        #        "State": State,
-        #        "City": City,
-        #        "Amenity": Amenity,
-        #        "Place": Place,
-        #        "Review": Review
+                # "User": User,
+                # "State": State,
+                # "City": City,
+                # "Amenity": Amenity,
+                # "Place": Place,
+                # "Review": Review
                 }
         if not os.path.isfile(FileStorage.__file_path):
             return
@@ -65,4 +66,3 @@ class FileStorage():
             for key in objects:
                 name = key.split(".")[0]
                 FileStorage.__objects[key] = my_dict[name](**objects[key])
-
