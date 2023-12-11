@@ -1,59 +1,90 @@
 #!/usr/bin/python3
-"""Unit test for the class city
-"""
+""" Defines a class TestAmenity for Amenity module. """
 import unittest
-# import json
-import pep8
-from models import city
-from models.city import City
+from models.amenity import Amenity
 from models.base_model import BaseModel
+import datetime
 
 
-class TestCityClass(unittest.TestCase):
-    """TestCityClass test for the city class
-    Args:
-        unittest (): Propertys for unit testing
-    """
+class TestAmenity(unittest.TestCase):
+    """Defines tests for Amenity Class"""
 
-    maxDiff = None
+    @classmethod
+    def setUp(cls):
+        """Runs for each test case.
+        """
+        cls.amenity1 = Amenity()
+        cls.amenity1.name = "Parking"
 
-    def setUp(self):
-        """Return to "" class attributes"""
-        City.name = ""
-        City.state_id = ""
+    @classmethod
+    def tearDown(cls):
+        """Cleans up after each test.
+        """
+        del cls.amenity1
 
-    def test_module_doc(self):
-        """ check for module documentation """
-        self.assertTrue(len(city.__doc__) > 0)
+    def test_class_exists(self):
+        """Tests if class exists.
+        """
+        result = "<class 'models.amenity.Amenity'>"
+        self.assertEqual(str(type(self.amenity1)), result)
 
-    def test_class_doc(self):
-        """ check for documentation """
-        self.assertTrue(len(City.__doc__) > 0)
+    def test_inheritance(self):
+        """Test if Amenity is a subclass and instace of BaseModel.
+        """
+        self.assertIsInstance(self.amenity1, Amenity)
+        self.assertEqual(type(self.amenity1), Amenity)
+        self.assertEqual(issubclass(self.amenity1.__class__, BaseModel), True)
 
-    def test_method_docs(self):
-        """ check for method documentation """
-        for func in dir(City):
-            self.assertTrue(len(func.__doc__) > 0)
+    def test_types(self):
+        """Test if attributes type is correct.
+        """
+        self.assertIsInstance(self.amenity1.name, str)
+        self.assertEqual(type(self.amenity1.name), str)
+        self.assertIsInstance(self.amenity1.id, str)
+        self.assertEqual(type(self.amenity1.id), str)
+        self.assertIsInstance(self.amenity1.created_at, datetime.datetime)
+        self.assertIsInstance(self.amenity1.updated_at, datetime.datetime)
 
-    def test_pep8(self):
-        """ test base and test_base for pep8 conformance """
-        style = pep8.StyleGuide(quiet=True)
-        file1 = 'models/city.py'
-        file2 = 'tests/test_models/test_city.py'
-        result = style.check_files([file1, file2])
-        self.assertEqual(result.total_errors, 0,
-                         "Found code style errors (and warning).")
+    def test_save(self):
+        """Test if save method is working correctly after update.
+        """
+        self.amenity1.save()
+        self.assertNotEqual(self.amenity1.created_at, self.amenity1.updated_at)
 
-    def test_is_instance(self):
-        """ Test if user is instance of basemodel """
-        my_city = City()
-        self.assertTrue(isinstance(my_city, BaseModel))
+    def test_functions(self):
+        """Test if Amenity moudule is documented.
+        """
+        self.assertIsNotNone(Amenity.__doc__)
 
-    def test_field_types(self):
-        """ Test field attributes of user """
-        my_city = City()
-        self.assertTrue(type(my_city.name) == str)
-        self.assertTrue(type(my_city.state_id) == str)
+    def test_has_attributes(self):
+        """Test if expected attributes exist.
+        """
+        self.assertTrue(hasattr(self.amenity1, 'name'))
+        self.assertTrue(hasattr(self.amenity1, 'id'))
+        self.assertTrue(hasattr(self.amenity1, 'created_at'))
+        self.assertTrue(hasattr(self.amenity1, 'updated_at'))
+
+    def test_to_dict(self):
+        """Test if to_dict method is working correctly.
+        """
+        my_model_json = self.amenity1.to_dict()
+        self.assertEqual(str, type(my_model_json['created_at']))
+        self.assertEqual(my_model_json['created_at'],
+                         self.amenity1.created_at.isoformat())
+        self.assertEqual(datetime.datetime, type(self.amenity1.created_at))
+        self.assertEqual(my_model_json['__class__'],
+                         self.amenity1.__class__.__name__)
+        self.assertEqual(my_model_json['id'], self.amenity1.id)
+
+    def test_unique_id(self):
+        """Test if each instance is created with a unique ID.
+        """
+        amenity2 = self.amenity1.__class__()
+        amenity3 = self.amenity1.__class__()
+        amenity4 = self.amenity1.__class__()
+        self.assertNotEqual(self.amenity1.id, amenity2.id)
+        self.assertNotEqual(self.amenity1.id, amenity3.id)
+        self.assertNotEqual(self.amenity1.id, amenity4.id)
 
 
 if __name__ == '__main__':
